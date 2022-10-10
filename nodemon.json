@@ -1,0 +1,9 @@
+{
+    "env": {
+        "MONGO_ATLAS_PW": "Test@1223",
+        "MONGO_URI_ONLINE": "mongodb+srv://gangwar0145:xxGTyguBt2EnatV5@cluster0.mmynjns.mongodb.net/?retryWrites=true&w=majority",
+        "MONGO_URI": "mongodb://localhost:27017/quizkaro",
+        "JWT_KEY": "secret",
+        "PROXY": "http://localhost:8001"
+    }
+}
