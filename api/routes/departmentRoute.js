@@ -2,19 +2,16 @@ const express = require("express");
 const router = express.Router();
 const departmentController = require("@controllers/departmentController");
 const checkAuthMiddleware = require("@middlewares/checkAuth");
-const checkAdminMiddleware = require("@middlewares/checkAdmin");
-const checkCustomer = require("@middlewares/checkCustomer");
-const checkAuth = require("@middlewares/checkAuth");
-const { route } = require("./userRoute");
+const checkRoleMiddleware = require("@middlewares/checkRole");
 
 // REST API- structure.
 
 /**
  * @public
  * save department
- * url: /department, method: post
+ * url: /department, method: put
 */
-router.post("/", departmentController.saveDepartment);
+router.put("/", departmentController.saveDepartment);
 
 /**
  * @public
@@ -35,7 +32,7 @@ router.get("/:id", departmentController.getADepartmentVidId);
  * update a department via id
  * url: /department/:id, method: patch
 */
-router.patch("/:id", departmentController.updateDeparment);
+router.patch("/:id", departmentController.updateDepartment);
 
 module.exports = router;
 

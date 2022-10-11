@@ -7,24 +7,24 @@ const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 
 
-mongoose.connect(process.env.MONGO_URI_ONLINE, {
+mongoose.connect(process.env.MONGO_URI_LOCAL, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
 
-var db = mongoose.connection
+var db = mongoose.connection // uri string contains the database name.
 db.on('error', console.error.bind(console, 'Connection error:'))
-db.once('open', function callback () {
+db.once('open', function callback() {
   console.log('Database Connected! API URL : ' + process.env.PROXY)
 })
- 
+
 mongoose.promise = global.Promise
 
 app.use(morgan('dev'))
 app.use('/uploads', express.static('uploads'))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json());
-var cors = require('cors');
+const cors = require('cors');
 app.use(cors());
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*')

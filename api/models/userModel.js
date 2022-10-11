@@ -2,12 +2,42 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
 const userSchema = Schema({
   _id: Schema.Types.ObjectId,
-  role: { type: String, required: true }, // doctor, nurse, patient
+  role: {
+    type: String,
+    required: true
+  }, // doctor, nurse, patient
   firstName: {
     type: String,
     required: true
   },
   lastName: {
+    type: String
+  },
+  address: {
+    type: String
+  },
+  city: {
+    type: String
+  },
+  province: {
+    type: String
+  },
+  mobile: {
+    type: String
+  },
+  postalCode: {
+    type: String
+  },
+  bloodGroup: {
+    type: String
+  },
+  dob: {
+    type: Date
+  },
+  healthCardNo: {
+    type: String
+  },
+  allergies: {
     type: String
   },
   email: {
@@ -24,13 +54,7 @@ const userSchema = Schema({
   },
   otp: {
     type: String,
-    trim: true,
-  },
-  userName: {
-    type: String,
-    trim: true,
-    required: true,
-    unique: true
+    trim: true
   },
   isDeleted: {
     type: Boolean,

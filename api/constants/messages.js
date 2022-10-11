@@ -17,10 +17,10 @@ module.exports = Object.freeze({
       BLOCKED: "User blocked " + S,
     },
     DEPARTMENT: {
-      CREATED: "DEPARTMENT created " + S,
-      UPDATED: "DEPARTMENT updated " + S,
-      DELETED: "DEPARTMENT deleted " + S,
-      FETCHED: "DEPARTMENT record(s) fetched " + S,
+      CREATED: "Department created " + S,
+      UPDATED: "Department updated " + S,
+      DELETED: "Department deleted " + S,
+      FETCHED: "Department record(s) fetched " + S,
     },
     PROFILE: {
       CREATED: "Profile created " + S,

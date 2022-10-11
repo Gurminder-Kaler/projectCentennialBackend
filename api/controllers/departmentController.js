@@ -37,8 +37,10 @@ exports.getADepartmentVidId = async (req, res) => {
 //@usage save department
 exports.saveDepartment = async (req, res) => {
   try {
+    console.log('Save department', req.body);
     return await saveDepartmentServiceFunc(req, res);
   } catch (err) {
+    console.log('Save department error', err);
     return res.json({
       status: 500,
       success: false,
@@ -49,7 +51,7 @@ exports.saveDepartment = async (req, res) => {
 
 //@private
 //@usage update Deparment 
-exports.updateDeparmentServiceFunc = async (req, res) => {
+exports.updateDepartment = async (req, res) => {
   try {
     return await updateDeparmentServiceFunc(req, res);
   } catch (err) {

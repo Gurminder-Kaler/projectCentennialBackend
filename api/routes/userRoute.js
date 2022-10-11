@@ -2,15 +2,13 @@ const express = require("express");
 const router = express.Router();
 const userController = require("@controllers/userController");
 const checkAuthMiddleware = require("@middlewares/checkAuth");
-const checkAdminMiddleware = require("@middlewares/checkAdmin");
-const checkCustomer = require("@middlewares/checkCustomer");
-const checkAuth = require("@middlewares/checkAuth");
+const checkRoleMiddleware = require("@middlewares/checkRole");
 
 //REST API- structure.
 
 //  /users GET
 router.post("/getAllUsers", userController.getAllUsers);
-// checkAuthMiddleware, checkAdminMiddleware
+// checkAuthMiddleware, checkRoleMiddleware
 
 //  /users/:id GET
 router.post("/getUserViaId", userController.getUserViaId);
