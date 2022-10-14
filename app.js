@@ -43,8 +43,8 @@ app.use((req, res, next) => {
 const userRouter = require('./api/routes/userRoute')
 const departmentRouter = require('./api/routes/departmentRoute')
 
-app.use('/user', userRouter)
-app.use('/department', departmentRouter)
+app.use('/users', userRouter)
+app.use('/departments', departmentRouter)
 
 app.use((req, res, next) => {
   const error = new Error('URL Not found or Please Check POST or GET')

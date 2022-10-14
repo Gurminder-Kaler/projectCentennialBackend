@@ -11,38 +11,49 @@ const userSchema = Schema({
     required: true
   },
   lastName: {
-    type: String
+    type: String,
+    default: null
   },
   address: {
-    type: String
+    type: String,
+    default: null
   },
   city: {
-    type: String
+    type: String,
+    default: null
   },
   province: {
-    type: String
+    type: String,
+    default: null
   },
   mobile: {
-    type: String
+    type: String,
+    default: null
   },
   postalCode: {
-    type: String
+    type: String,
+    default: null
   },
   bloodGroup: {
-    type: String
+    type: String,
+    default: null
   },
   dob: {
-    type: Date
+    type: Date,
+    default: null
   },
   healthCardNo: {
-    type: String
+    type: String,
+    default: null
   },
   allergies: {
-    type: String
+    type: String,
+    default: null
   },
   email: {
     type: String,
     trim: true,
+    required: true,
     unique: true,
     default: null,
     match: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
@@ -54,7 +65,8 @@ const userSchema = Schema({
   },
   otp: {
     type: String,
-    trim: true
+    trim: true,
+    default: null
   },
   isDeleted: {
     type: Boolean,

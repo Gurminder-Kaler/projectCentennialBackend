@@ -30,68 +30,54 @@ const signUpServiceFunc = async (req, res) => {
           success: false,
           message: messages.FAILURE.EMAIL_ALREADY_TAKEN,
         });
-      } else {
-        User.find({
-          userName: req.body.userName,
-        }).then((us) => {
-          // console.log("3777");
-          if (us.length > 0) {
+      } else { 
+        bcrypt.hash(req.body.password, 10, (err, hash) => {
+          if (err) {
             return res.json({
-              status: 409,
+              status: 500,
               success: false,
-              message: messages.FAILURE.USERNAME_ALREADY_TAKEN,
+              message: err,
             });
           } else {
-            bcrypt.hash(req.body.password, 10, (err, hash) => {
-              if (err) {
+            const token = jwt.sign(
+              {
+                email: req.body.email,
+                userId: u.id,
+              },
+              process.env.JWT_KEY,
+              {
+                expiresIn: "11h",
+              }
+            );
+            let userVar = new User({
+              _id: new mongoose.Types.ObjectId(),
+              firstName: req.body.firstName,
+              lastName: req.body.lastName,
+              role: req.body.role,
+              gender: req.body.gender,
+              email: req.body.email,
+              password: hash,
+            });
+            userVar.save().then((result) => {
+              // console.log("result111", result);
+              if (result) {
                 return res.json({
-                  status: 500,
-                  success: false,
-                  message: err,
-                });
-              } else {
-                const token = jwt.sign(
-                  {
-                    email: us.email,
-                    userId: us._id,
+                  status: 200,
+                  success: true,
+                  message: messages.SUCCESS.USER.CREATED,
+                  token: token,
+                  data: {
+                    id: result._id,
+                    firstName: result.firstName,
+                    lastName: result.lastName,
+                    role: result.role,
+                    email: result.email
                   },
-                  process.env.JWT_KEY,
-                  {
-                    expiresIn: "11h",
-                  }
-                );
-                let userVar = new User({
-                  _id: new mongoose.Types.ObjectId(),
-                  firstName: req.body.firstName,
-                  lastName: req.body.lastName,
-                  userName: req.body.userName,
-                  role: req.body.role,
-                  email: req.body.email,
-                  password: hash,
-                });
-                userVar.save().then((result) => {
-                  // console.log("result111", result);
-                  if (result) {
-                    return res.json({
-                      status: 200,
-                      success: true,
-                      message: messages.SUCCESS.USER.CREATED,
-                      token: token,
-                      data: {
-                        id: result._id,
-                        firstName: result.firstName,
-                        role: result.role,
-                        lastName: result.lastName,
-                        email: result.email,
-                        userName: result.userName,
-                      },
-                    });
-                  }
                 });
               }
             });
           }
-        });
+        }); 
       }
     });
     // console.log("77");
@@ -149,8 +135,7 @@ const signInServiceFunc = async (req, res) => {
               firstName: user.firstName,
               role: user.role,
               lastName: user.lastName,
-              email: user.email,
-              userName: user.userName,
+              email: user.email
             },
           });
         } else {
@@ -184,7 +169,6 @@ const getAllUsersServiceFunc = async (req, res) => {
             _id: doc && doc._id,
             firstName: doc && doc.firstName,
             lastName: doc && doc.lastName,
-            userName: doc && doc.userName,
             role: doc && doc.role,
             email: doc && doc.email,
             createdAt: doc && doc.createdAt,
@@ -226,7 +210,6 @@ const getUserViaIdServiceFunc = async (req, res) => {
           _id: user && user._id,
           firstName: user && user.firstName,
           lastName: user && user.lastName,
-          userName: user && user.userName,
           role: user && user.role,
           email: user && user.email,
           createdAt: user && user.createdAt,
