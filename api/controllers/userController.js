@@ -1,18 +1,48 @@
 const {
   signUpServiceFunc,
-  getAllUsersServiceFunc,
+  getAllUsersOfTypeServiceFunc,
   getUserViaIdServiceFunc,
   updateProfileServiceFunc,
   sendForgotPasswordOTPEmailServiceFunc,
   signInServiceFunc,
   verifyOTPServiceFunc,
-  updatePasswordServiceFunc
+  addPatientServiceFunc,
+  updatePasswordServiceFunc,
+  getAllPatientsOfAUserServiceFunc,
+  getAPatientsInfoServiceFunc
+
 } = require("@services/userService");
 
-exports.getAllUsers = async (req, res) => {
+exports.getAllUsersOfType = async (req, res) => {
   console.log("req,,,,,,,,,,,,,,,,,,,,", req.body);
   try {
-    return await getAllUsersServiceFunc(req, res);
+    return await getAllUsersOfTypeServiceFunc(req, res);
+  } catch (err) {
+    return res.json({
+      status: 500,
+      success: false,
+      message: err,
+    });
+  }
+};
+
+exports.getAllPatientsOfAUser = async (req, res) => {
+  console.log("req,,,,,,,,,,,,,,,,,,,,", req.body);
+  try {
+    return await getAllPatientsOfAUserServiceFunc(req, res);
+  } catch (err) {
+    return res.json({
+      status: 500,
+      success: false,
+      message: err,
+    });
+  }
+};
+
+exports.getAPatientsInfo = async (req, res) => {
+  console.log("req,,,,,,,,,,,,,,,,,,,,", req.body);
+  try {
+    return await getAPatientsInfoServiceFunc(req, res);
   } catch (err) {
     return res.json({
       status: 500,
@@ -37,6 +67,18 @@ exports.getUserViaId = async (req, res) => {
 exports.signUp = async (req, res) => {
   try {
     return await signUpServiceFunc(req, res);
+  } catch (err) {
+    return res.json({
+      status: 500,
+      success: false,
+      message: err,
+    });
+  }
+};
+
+exports.addPatient = async (req, res) => {
+  try {
+    return await addPatientServiceFunc(req, res);
   } catch (err) {
     return res.json({
       status: 500,

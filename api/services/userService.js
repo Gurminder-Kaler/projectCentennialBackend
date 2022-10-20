@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const messages = require("@constants/messages");
 const User = require("@models/userModel");
+const TestRecord = require("@models/testRecordModel");
 const signUpValidator = require("@validations/authRequest/signUpValidator");
 
 const signUpServiceFunc = async (req, res) => {
@@ -30,7 +31,7 @@ const signUpServiceFunc = async (req, res) => {
           success: false,
           message: messages.FAILURE.EMAIL_ALREADY_TAKEN,
         });
-      } else { 
+      } else {
         bcrypt.hash(req.body.password, 10, (err, hash) => {
           if (err) {
             return res.json({
@@ -77,7 +78,85 @@ const signUpServiceFunc = async (req, res) => {
               }
             });
           }
-        }); 
+        });
+      }
+    });
+    // console.log("77");
+  } catch (err) {
+    return res.json({
+      status: 500,
+      success: false,
+      message: "err",
+    });
+  }
+};
+
+const addPatientServiceFunc = async (req, res) => {
+  try {
+    await User.find({
+      email: req.body.email,
+    }).then((u) => {
+      // console.log("3777");
+      if (u.length > 0) {
+        return res.json({
+          status: 409,
+          success: false,
+          message: messages.FAILURE.EMAIL_ALREADY_TAKEN,
+        });
+      } else {
+        bcrypt.hash(req.body.password, 10, (err, hash) => {
+          if (err) {
+            return res.json({
+              status: 500,
+              success: false,
+              message: err,
+            });
+          } else {
+            const token = jwt.sign(
+              {
+                email: req.body.email,
+                userId: u.id,
+              },
+              process.env.JWT_KEY,
+              {
+                expiresIn: "11h",
+              }
+            );
+            let userVar = new User({
+              _id: new mongoose.Types.ObjectId(),
+              firstName: req.body.firstName,
+              lastName: req.body.lastName,
+              role: "PATIENT",
+              gender: req.body.gender,
+              password: "12345678",
+              email: req.body.email,
+              address: req.body.address,
+              city: req.body.city,
+              postalCode: req.body.postalCode,
+              province: req.body.province,
+              bloodGroup: req.body.bloodGroup,
+              createdBy: req.body.createdBy
+            });
+            userVar.save().then((result) => {
+              // console.log("result111", result);
+              if (result) {
+                return res.json({
+                  status: 200,
+                  success: true,
+                  message: messages.SUCCESS.PATIENT.ADDED,
+                  token: token,
+                  data: {
+                    id: result._id,
+                    firstName: result.firstName,
+                    lastName: result.lastName,
+                    role: result.role,
+                    email: result.email
+                  },
+                });
+              }
+            });
+          }
+        });
       }
     });
     // console.log("77");
@@ -91,11 +170,12 @@ const signUpServiceFunc = async (req, res) => {
 };
 
 const signInServiceFunc = async (req, res) => {
-  // console.log("email | body", req.body);
+  console.log("email | body", req.body);
   User.findOne({
     email: req.body.email,
   })
     .then((user) => {
+      console.log('-----------USER------------', user);
       if (!user) {
         return res.json({
           status: 401,
@@ -133,8 +213,8 @@ const signInServiceFunc = async (req, res) => {
             data: {
               id: user._id,
               firstName: user.firstName,
-              role: user.role,
               lastName: user.lastName,
+              role: user.role,
               email: user.email
             },
           });
@@ -156,13 +236,16 @@ const signInServiceFunc = async (req, res) => {
     });
 };
 
-const getAllUsersServiceFunc = async (req, res) => {
-  User.find()
+const getAllUsersOfTypeServiceFunc = async (req, res) => {
+  User.find({
+    "role": req.body.type
+  })
     .select("-deletedAt")
     .exec()
     .then((docs) => {
       return res.json({
         status: 200,
+        success: true,
         count: docs.length,
         users: docs.map((doc) => {
           return {
@@ -175,6 +258,65 @@ const getAllUsersServiceFunc = async (req, res) => {
             updatedAt: doc && doc.updatedAt,
           };
         }),
+      });
+    })
+    .catch((err) => {
+      return res.json({
+        status: 500,
+        success: false,
+        message: err,
+      });
+    });
+};
+
+const getAllPatientsOfAUserServiceFunc = async (req, res) => {
+  console.log('ak`djshlkajsdasj asdasd asa sd sa ////////', req.params);
+  User.find({
+    "createdBy": req.params.userId
+  })
+    .select("-deletedAt")
+    .exec()
+    .then((docs) => {
+      return res.json({
+        status: 200,
+        success: true,
+        patients: docs.map((doc) => {
+          return {
+            _id: doc && doc._id,
+            firstName: doc && doc.firstName,
+            lastName: doc && doc.lastName,
+            role: doc && doc.role,
+            email: doc && doc.email,
+            createdAt: doc && doc.createdAt,
+            updatedAt: doc && doc.updatedAt,
+          };
+        }),
+      });
+    })
+    .catch((err) => {
+      return res.json({
+        status: 500,
+        success: false,
+        message: err,
+      });
+    });
+};
+
+const getAPatientsInfoServiceFunc = async (req, res) => {
+  console.log('ak`djshlkajsdasj asdasd asa sd sa ////////', req.params);
+  const tests = await TestRecord.find({ userId: req.params.patientId }).lean();
+
+  User.find({
+    "id": req.params.patientId
+  })
+    .select("-deletedAt")
+    .exec()
+    .then((doc) => {
+      return res.json({
+        status: 200,
+        data: doc,
+        success: true,
+        tests: tests
       });
     })
     .catch((err) => {
@@ -203,7 +345,7 @@ const getUserViaIdServiceFunc = async (req, res) => {
     .select("-deletedAt")
     .exec()
     .then((user) => {
-      res.json({
+      return res.json({
         success: true,
         message: messages.SUCCESS.USER.FETCHED,
         data: {
@@ -218,7 +360,7 @@ const getUserViaIdServiceFunc = async (req, res) => {
       });
     })
     .catch((err) => {
-      res.json({
+      return res.json({
         status: 500,
         success: false,
         message: "err",
@@ -233,7 +375,7 @@ const updateProfileServiceFunc = async (req, res) => {
   })
     .then((user) => {
       if (!user) {
-        res.json({
+        return res.json({
           status: 401,
           success: false,
           message: messages.FAILURE.USER_NOT_FOUND,
@@ -252,7 +394,7 @@ const updateProfileServiceFunc = async (req, res) => {
       )
         .then((result) => {
           // console.log("result", result);
-          res.json({
+          return res.json({
             success: true,
             status: 200,
             message: messages.SUCCESS.PROFILE.UPDATED,
@@ -267,7 +409,7 @@ const updateProfileServiceFunc = async (req, res) => {
           });
         })
         .catch((err) => {
-          res.json({
+          return res.json({
             status: 500,
             success: false,
             message: err,
@@ -275,7 +417,7 @@ const updateProfileServiceFunc = async (req, res) => {
         });
     })
     .catch((err) => {
-      res.json({
+      return res.json({
         status: 500,
         success: false,
         message: err,
@@ -299,8 +441,8 @@ function sendEmail(mailObject) {
     host: "smtp.gmail.com",
     port: 587, // true for 465, false for other ports
     auth: {
-      user: "chaos1.champ@gmail.com", // generated ethereal user
-      pass: "mdlhcdmuksjozjll", // generated ethereal password
+      user: "chaos1.champ@gmail.com", // google email
+      pass: "mdlhcdmuksjozjll", // generated google app password
     },
   });
 
@@ -314,6 +456,7 @@ const sendForgotPasswordOTPEmailServiceFunc = async (req, res) => {
     email: req.body.email,
   })
     .then((user) => {
+      console.log('......User aljksdjsalkjd ////////', user);
       if (!user) {
         return res.json({
           status: 401,
@@ -332,39 +475,39 @@ const sendForgotPasswordOTPEmailServiceFunc = async (req, res) => {
         { $set: fields }
       )
         .then((result) => {
-          // console.log("result", result);
+          console.log("result", result);
           let mailObject = {
-            from: '"Quiz Karo" <info@quizKaro.com>', // sender address
+            from: '"Team" <info@team.com>', // sender address
             to: result.email.toString(), // list of receivers
-            subject: "OTP for forgot password @ quizKaro ✔", // Subject line
+            subject: "OTP for forgot password @ team ✔", // Subject line
             text:
               "Hello, 6 digit otp for changing the forgotten password is : " +
               randomOTP, // plain text body
             html:
               "Hello, 6 digit otp for changing the forgotten password is : <b>" +
               randomOTP +
-              "</b> </br> Thanks,</br> quizKaro Team.", // html body
+              "</b> </br> Thanks,</br> Team.", // html body
           };
           sendEmail(mailObject); //send the email
-          res.json({
+          return res.json({
             success: true,
             status: 200,
             message: messages.SUCCESS.FORGOT_PASSWORD.EMAIL_SENT,
           });
         })
         .catch((err) => {
-          res.json({
+          return res.json({
             status: 500,
             success: false,
-            message: err,
+            message: "line 360 error ///////",
           });
         });
     })
     .catch((err) => {
-      res.json({
+      return res.json({
         status: 500,
         success: false,
-        message: err,
+        message: "line 368 error ///////",
       });
     });
 };
@@ -388,13 +531,13 @@ const verifyOTPServiceFunc = async (req, res) => {
           // console.log("result", result);
           if (result.otp == req.body.otp) {
             let mailObject = {
-              from: '"Quiz Karo" <info@quizKaro.com>', // sender address
+              from: '"Team" <info@team.com>', // sender address
               to: result.email.toString(), // list of receivers
-              subject: "Verification successful @ quizKaro ✔", // Subject line
+              subject: "Verification successful @ team ✔", // Subject line
               text: "Verification Successful, You may now change the password!", // plain text body
               html:
                 "Verification Successful, You may now change the password!" +
-                "</br> Thanks,</br> quizKaro Team.", // html body
+                "</br> Thanks,</br> team Team.", // html body
             };
             sendEmail(mailObject);
             return res.json({
@@ -411,7 +554,7 @@ const verifyOTPServiceFunc = async (req, res) => {
           }
         })
         .catch((err) => {
-          res.json({
+          return res.json({
             status: 500,
             success: false,
             message: err,
@@ -419,7 +562,7 @@ const verifyOTPServiceFunc = async (req, res) => {
         });
     })
     .catch((err) => {
-      res.json({
+      return res.json({
         status: 500,
         success: false,
         message: err,
@@ -458,13 +601,13 @@ const updatePasswordServiceFunc = async (req, res) => {
           )
             .then((result) => {
               let mailObject = {
-                from: '"Quiz Karo" <info@quizKaro.com>', // sender address
+                from: '"Team" <info@team.com>', // sender address
                 to: result.email.toString(), // list of receivers
-                subject: "You changed your password successfully @ quizKaro ✔", // Subject line
+                subject: "You changed your password successfully @ team ✔", // Subject line
                 text:
-                  "You changed your password Successfullly, You may now login with the password : ", // plain text body
+                  "You changed your password Successfully, You may now login with the password : ", // plain text body
                 html:
-                  "You changed your password Successfullly, You may now login with the password : </br> Thanks,</br> quizKaro Team.",
+                  "You changed your password Successfully, You may now login with the password : </br> Thanks,</br> team Team.",
               };
               sendEmail(mailObject);
               return res.json({
@@ -474,7 +617,7 @@ const updatePasswordServiceFunc = async (req, res) => {
               });
             })
             .catch((err) => {
-              res.json({
+              return res.json({
                 status: 500,
                 success: false,
                 message: err,
@@ -484,7 +627,7 @@ const updatePasswordServiceFunc = async (req, res) => {
       });
     })
     .catch((err) => {
-      res.json({
+      return res.json({
         status: 500,
         success: false,
         message: err,
@@ -494,11 +637,14 @@ const updatePasswordServiceFunc = async (req, res) => {
 
 const userService = (module.exports = {
   signUpServiceFunc,
-  getAllUsersServiceFunc,
+  addPatientServiceFunc,
+  getAllUsersOfTypeServiceFunc,
   getUserViaIdServiceFunc,
   signInServiceFunc,
+  getAPatientsInfoServiceFunc,
   updateProfileServiceFunc,
   sendForgotPasswordOTPEmailServiceFunc,
   verifyOTPServiceFunc,
+  getAllPatientsOfAUserServiceFunc,
   updatePasswordServiceFunc,
 });

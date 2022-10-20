@@ -16,6 +16,9 @@ module.exports = Object.freeze({
       FETCHED: "User record(s) fetched " + S,
       BLOCKED: "User blocked " + S,
     },
+    PATIENT: {
+      ADDED: "Patient added " + S,
+    },
     DEPARTMENT: {
       CREATED: "Department created " + S,
       UPDATED: "Department updated " + S,
@@ -29,8 +32,11 @@ module.exports = Object.freeze({
       FETCHED: "Profile record(s) fetched " + S,
     },
     AUTH: {
-      LOGGEDIN: "You logged in " + S,
+      LOGGEDIN: "Welcome!",
       PASSWORD_CHANGED: "Password changed " + S + ", you may login now!",
+    },
+    FORGOT_PASSWORD: {
+      EMAIL_SENT: "OTP sent over the email " + S
     },
   },
   FAILURE: {

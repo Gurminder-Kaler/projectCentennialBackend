@@ -15,6 +15,18 @@ const testRecordSchema = Schema({
   risk : {
     type: String,
   },
+  createdBy: {
+    //created by
+    type: Schema.Types.ObjectId, 
+    ref: 'User',
+    default: null
+  },
+  userId: {
+    //created for
+    type: Schema.Types.ObjectId, 
+    ref: 'User',
+    default: null
+  },
   deletedAt: {
     type: Date,
     default: null
