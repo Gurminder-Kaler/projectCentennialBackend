@@ -39,21 +39,10 @@ exports.getAllPatientsOfAUser = async (req, res) => {
   }
 };
 
-exports.getAPatientsInfo = async (req, res) => {
-  console.log("req,,,,,,,,,,,,,,,,,,,,", req.body);
-  try {
-    return await getAPatientsInfoServiceFunc(req, res);
-  } catch (err) {
-    return res.json({
-      status: 500,
-      success: false,
-      message: err,
-    });
-  }
-};
 
 exports.getUserViaId = async (req, res) => {
   try {
+    console.log('getUserViaId cotroller line 58 ', req.body);
     return await getUserViaIdServiceFunc(req, res);
   } catch (err) {
     return res.json({

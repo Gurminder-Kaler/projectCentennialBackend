@@ -91,84 +91,6 @@ const signUpServiceFunc = async (req, res) => {
   }
 };
 
-const addPatientServiceFunc = async (req, res) => {
-  try {
-    await User.find({
-      email: req.body.email,
-    }).then((u) => {
-      // console.log("3777");
-      if (u.length > 0) {
-        return res.json({
-          status: 409,
-          success: false,
-          message: messages.FAILURE.EMAIL_ALREADY_TAKEN,
-        });
-      } else {
-        bcrypt.hash(req.body.password, 10, (err, hash) => {
-          if (err) {
-            return res.json({
-              status: 500,
-              success: false,
-              message: err,
-            });
-          } else {
-            const token = jwt.sign(
-              {
-                email: req.body.email,
-                userId: u.id,
-              },
-              process.env.JWT_KEY,
-              {
-                expiresIn: "11h",
-              }
-            );
-            let userVar = new User({
-              _id: new mongoose.Types.ObjectId(),
-              firstName: req.body.firstName,
-              lastName: req.body.lastName,
-              role: "PATIENT",
-              gender: req.body.gender,
-              password: "12345678",
-              email: req.body.email,
-              address: req.body.address,
-              city: req.body.city,
-              postalCode: req.body.postalCode,
-              province: req.body.province,
-              bloodGroup: req.body.bloodGroup,
-              createdBy: req.body.createdBy
-            });
-            userVar.save().then((result) => {
-              // console.log("result111", result);
-              if (result) {
-                return res.json({
-                  status: 200,
-                  success: true,
-                  message: messages.SUCCESS.PATIENT.ADDED,
-                  token: token,
-                  data: {
-                    id: result._id,
-                    firstName: result.firstName,
-                    lastName: result.lastName,
-                    role: result.role,
-                    email: result.email
-                  },
-                });
-              }
-            });
-          }
-        });
-      }
-    });
-    // console.log("77");
-  } catch (err) {
-    return res.json({
-      status: 500,
-      success: false,
-      message: "err",
-    });
-  }
-};
-
 const signInServiceFunc = async (req, res) => {
   console.log("email | body", req.body);
   User.findOne({
@@ -238,7 +160,7 @@ const signInServiceFunc = async (req, res) => {
 
 const getAllUsersOfTypeServiceFunc = async (req, res) => {
   User.find({
-    "role": req.body.type
+    "role": req.params.type
   })
     .select("-deletedAt")
     .exec()
@@ -278,8 +200,9 @@ const getAllPatientsOfAUserServiceFunc = async (req, res) => {
     .exec()
     .then((docs) => {
       return res.json({
-        status: 200,
         success: true,
+        status: 200,
+        message: messages.SUCCESS.PATIENT.ALL,
         patients: docs.map((doc) => {
           return {
             _id: doc && doc._id,
@@ -295,40 +218,17 @@ const getAllPatientsOfAUserServiceFunc = async (req, res) => {
     })
     .catch((err) => {
       return res.json({
-        status: 500,
         success: false,
+        status: 500,
         message: err,
       });
     });
 };
 
-const getAPatientsInfoServiceFunc = async (req, res) => {
-  console.log('ak`djshlkajsdasj asdasd asa sd sa ////////', req.params);
-  const tests = await TestRecord.find({ userId: req.params.patientId }).lean();
 
-  User.find({
-    "id": req.params.patientId
-  })
-    .select("-deletedAt")
-    .exec()
-    .then((doc) => {
-      return res.json({
-        status: 200,
-        data: doc,
-        success: true,
-        tests: tests
-      });
-    })
-    .catch((err) => {
-      return res.json({
-        status: 500,
-        success: false,
-        message: err,
-      });
-    });
-};
 
 const getUserViaIdServiceFunc = async (req, res) => {
+  console.log('req ////', req.params);
   // const { errors, isValid } = myAccountValidator(req.body)
   // if (!isValid) {
   //   res.json({
@@ -339,7 +239,7 @@ const getUserViaIdServiceFunc = async (req, res) => {
   // }
   // console.log(req.body);
   const filter = {
-    _id: req.body.userId,
+    _id: req.params.userId,
   };
   User.findOne(filter)
     .select("-deletedAt")
@@ -637,11 +537,9 @@ const updatePasswordServiceFunc = async (req, res) => {
 
 const userService = (module.exports = {
   signUpServiceFunc,
-  addPatientServiceFunc,
   getAllUsersOfTypeServiceFunc,
   getUserViaIdServiceFunc,
   signInServiceFunc,
-  getAPatientsInfoServiceFunc,
   updateProfileServiceFunc,
   sendForgotPasswordOTPEmailServiceFunc,
   verifyOTPServiceFunc,

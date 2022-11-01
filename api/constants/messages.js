@@ -18,6 +18,12 @@ module.exports = Object.freeze({
     },
     PATIENT: {
       ADDED: "Patient added " + S,
+      ALL: "All Patients",
+      SINGLE: "Patient\'s data loaded"
+    },
+    TEST: {
+      ALL: "All Tests Loaded",
+      ADDED: "Test added " + S
     },
     DEPARTMENT: {
       CREATED: "Department created " + S,

@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const departmentController = require("@controllers/departmentController");
-const checkAuthMiddleware = require("@middlewares/checkAuth");
-const checkRoleMiddleware = require("@middlewares/checkRole");
+// const checkAuthMiddleware = require("@middlewares/checkAuth");
+// const checkRoleMiddleware = require("@middlewares/checkRole");
 
 // REST API- structure.
 

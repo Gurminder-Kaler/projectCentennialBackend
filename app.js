@@ -41,9 +41,11 @@ app.use((req, res, next) => {
 
 //routes which should handle requests
 const userRouter = require('./api/routes/userRoute')
+const patientRouter = require('./api/routes/patientRoute')
 const departmentRouter = require('./api/routes/departmentRoute')
 
 app.use('/users', userRouter)
+app.use('/patients', patientRouter)
 app.use('/departments', departmentRouter)
 
 app.use((req, res, next) => {

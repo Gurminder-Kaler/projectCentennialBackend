@@ -5,7 +5,7 @@ const userSchema = Schema({
   role: {
     type: String,
     required: true
-  }, // doctor, nurse, patient
+  }, // doctor, nurse
   firstName: {
     type: String,
     required: true
