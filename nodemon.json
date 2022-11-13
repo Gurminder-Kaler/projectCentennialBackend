@@ -4,6 +4,7 @@
         "MONGO_URI_ONLINE": "mongodb+srv://gangwar0145:xxGTyguBt2EnatV5@cluster0.mmynjns.mongodb.net/?retryWrites=true&w=majority",
         "MONGO_URI_LOCAL": "mongodb://localhost:27017/centennialProject",
         "JWT_KEY": "secret",
-        "PROXY": "http://localhost:8001"
+        "PROXY": "http://localhost:8001",
+        "LIVE_PROXY": "http://3.223.2.92"
     }
 }

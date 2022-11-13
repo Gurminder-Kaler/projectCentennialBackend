@@ -7,7 +7,7 @@ const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 
 
-mongoose.connect(process.env.MONGO_URI_LOCAL, {
+mongoose.connect(process.env.MONGO_URI_ONLINE, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
@@ -15,7 +15,7 @@ mongoose.connect(process.env.MONGO_URI_LOCAL, {
 var db = mongoose.connection // uri string contains the database name.
 db.on('error', console.error.bind(console, 'Connection error:'))
 db.once('open', function callback() {
-  console.log('Database Connected! API URL : ' + process.env.PROXY)
+  console.log('Database Connected! API URL : ' + process.env.LIVE_PROXY)
 })
 
 mongoose.promise = global.Promise
