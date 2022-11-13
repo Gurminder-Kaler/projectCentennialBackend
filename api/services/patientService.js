@@ -148,11 +148,9 @@ const getAPatientsInfoServiceFunc = async (req, res) => {
   console.log('user service getAPatientsInfo  ////////', req.params);
   // const tests = await TestRecord.find({ userId: req.params.patientId }).lean();
 
-  Patient.findOne({
-    "_id": req.params.patientId
-  })
+  Patient.findById(
+     req.params.patientId)
     .select("-deletedAt")
-    .exec()
     .then((doc) => {
       if (!doc) {
         return res.json({

@@ -45,7 +45,6 @@ exports.getAPatient = async (req, res) => {
   }
 };
 
-
 exports.getAPatientsInfo = async (req, res) => {
   console.log("req,,,,,,,,,,,,,,,,,,,,", req.body);
   try {
