@@ -3,6 +3,8 @@ const messages = require("@constants/messages");
 const TestRecord = require("@models/testRecordModel");
 const Patient = require("@models/patientModel");
 
+
+
 const getAllTestsOfAPatientServiceFunc = async (req, res) => {
   console.log('REQQQQ', req.params);
   Patient.findOne({ _id: req.params.patientId }).then((patient) => {

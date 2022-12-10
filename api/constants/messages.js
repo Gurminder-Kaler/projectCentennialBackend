@@ -44,7 +44,8 @@ module.exports = Object.freeze({
       PASSWORD_CHANGED: "Password changed " + S + ", you may login now!",
     },
     FORGOT_PASSWORD: {
-      EMAIL_SENT: "OTP sent over the email " + S
+      EMAIL_SENT: "OTP sent over the email " + S,
+      VERIFICATION_DONE: "Verification done " + S + ", now please proceed to change your password!"
     },
   },
   FAILURE: {
@@ -57,6 +58,7 @@ module.exports = Object.freeze({
     BLOCK_USER_NOT_FOUND: "User to be blocked not Found",
     PUBLIC_REQUESTS_DISABLED: "Public Requests are disabled",
     PROFILE_NOT_FOUND: "Profile for this user not Found",
+    NO_PATIENT_FOUND: "No Patients Found For this user.",
     POST_NOT_FOUND: "No Posts Found",
     COMMENT_NOT_FOUND: "No Comments Found",
     PROFESSION_NOT_FOUND: "Profession not found",

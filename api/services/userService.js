@@ -4,9 +4,53 @@ const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const messages = require("@constants/messages");
 const User = require("@models/userModel");
-const TestRecord = require("@models/testRecordModel");
+const Patient = require("@models/patientModel");
 const signUpValidator = require("@validations/authRequest/signUpValidator");
 
+const getAllPatientsOfAUserServiceFunc = async (req, res) => {
+  console.log('getAllPatientsOfAUserServiceFunc patient Service ////////', req.params);
+  Patient.find({
+    "createdBy": req.params.userId
+  })
+    .select("-deletedAt")
+    .exec()
+    .then((docs) => {
+      console.log('getAllPatientsOfAUserServiceFunc patient Service doc', docs);
+      if (docs && docs.length > 0) {
+        return res.json({
+          success: true,
+          status: 200,
+          message: messages.SUCCESS.PATIENT.ALL,
+          patients: docs.map((doc) => {
+            return {
+              _id: doc && doc._id,
+              firstName: doc && doc.firstName,
+              lastName: doc && doc.lastName,
+              role: doc && doc.role,
+              email: doc && doc.email,
+              createdAt: doc && doc.createdAt,
+              updatedAt: doc && doc.updatedAt,
+            };
+          }),
+        });
+
+      } else {
+        return res.json({
+          success: false, 
+          status: 404,
+          message: messages.FAILURE.NO_PATIENT_FOUND,
+        });
+      }
+    })
+    .catch((err) => {
+      return res.json({
+        success: false,
+        status: 500,
+        message: err,
+      });
+    });
+}
+;l
 const signUpServiceFunc = async (req, res) => {
   try {
     // console.log("console//////", req.body);
@@ -165,22 +209,33 @@ const getAllUsersOfTypeServiceFunc = async (req, res) => {
     .select("-deletedAt")
     .exec()
     .then((docs) => {
-      return res.json({
-        status: 200,
-        success: true,
-        count: docs.length,
-        users: docs.map((doc) => {
-          return {
-            _id: doc && doc._id,
-            firstName: doc && doc.firstName,
-            lastName: doc && doc.lastName,
-            role: doc && doc.role,
-            email: doc && doc.email,
-            createdAt: doc && doc.createdAt,
-            updatedAt: doc && doc.updatedAt,
-          };
-        }),
-      });
+      if (docs) {
+        if (docs.length > 0) {
+          return res.json({
+            status: 200,
+            success: true,
+            count: docs.length,
+            users: docs.map((doc) => {
+              return {
+                _id: doc && doc._id,
+                firstName: doc && doc.firstName,
+                lastName: doc && doc.lastName,
+                role: doc && doc.role,
+                email: doc && doc.email,
+                createdAt: doc && doc.createdAt,
+                updatedAt: doc && doc.updatedAt,
+              };
+            }),
+          });
+        } else {
+          return res.json({
+            status: 404,
+            success: false,
+            messages: 'No users Found'
+          });
+        }
+      }
+
     })
     .catch((err) => {
       return res.json({
@@ -190,42 +245,6 @@ const getAllUsersOfTypeServiceFunc = async (req, res) => {
       });
     });
 };
-
-const getAllPatientsOfAUserServiceFunc = async (req, res) => {
-  console.log('ak`djshlkajsdasj asdasd asa sd sa ////////', req.params);
-  User.find({
-    "createdBy": req.params.userId
-  })
-    .select("-deletedAt")
-    .exec()
-    .then((docs) => {
-      return res.json({
-        success: true,
-        status: 200,
-        message: messages.SUCCESS.PATIENT.ALL,
-        patients: docs.map((doc) => {
-          return {
-            _id: doc && doc._id,
-            firstName: doc && doc.firstName,
-            lastName: doc && doc.lastName,
-            role: doc && doc.role,
-            email: doc && doc.email,
-            createdAt: doc && doc.createdAt,
-            updatedAt: doc && doc.updatedAt,
-          };
-        }),
-      });
-    })
-    .catch((err) => {
-      return res.json({
-        success: false,
-        status: 500,
-        message: err,
-      });
-    });
-};
-
-
 
 const getUserViaIdServiceFunc = async (req, res) => {
   console.log('req ////', req.params);
@@ -351,7 +370,7 @@ function sendEmail(mailObject) {
 }
 
 const sendForgotPasswordOTPEmailServiceFunc = async (req, res) => {
-  console.log("email", req.body);
+  console.log("email123", req.body);
   User.findOne({
     email: req.body.email,
   })
@@ -471,13 +490,15 @@ const verifyOTPServiceFunc = async (req, res) => {
 };
 
 const updatePasswordServiceFunc = async (req, res) => {
+  console.log('post updatePasswordServiceFunc', req.body.email);
   User.findOne({
     email: req.body.email,
   })
     .then((user) => {
+      console.log('user', user);
       if (!user) {
         return res.json({
-          status: 401,
+          status: 404,
           success: false,
           message: messages.FAILURE.USER_NOT_FOUND,
         });
@@ -536,6 +557,7 @@ const updatePasswordServiceFunc = async (req, res) => {
 };
 
 const userService = (module.exports = {
+  getAllPatientsOfAUserServiceFunc,
   signUpServiceFunc,
   getAllUsersOfTypeServiceFunc,
   getUserViaIdServiceFunc,
@@ -543,6 +565,5 @@ const userService = (module.exports = {
   updateProfileServiceFunc,
   sendForgotPasswordOTPEmailServiceFunc,
   verifyOTPServiceFunc,
-  getAllPatientsOfAUserServiceFunc,
   updatePasswordServiceFunc,
 });

@@ -4,30 +4,15 @@ const {
   getUserViaIdServiceFunc,
   updateProfileServiceFunc,
   sendForgotPasswordOTPEmailServiceFunc,
+  getAllPatientsOfAUserServiceFunc,
   signInServiceFunc,
   verifyOTPServiceFunc,
   addPatientServiceFunc,
-  updatePasswordServiceFunc,
-  getAllPatientsOfAUserServiceFunc,
-  getAPatientsInfoServiceFunc
-
+  updatePasswordServiceFunc
 } = require("@services/userService");
 
-exports.getAllUsersOfType = async (req, res) => {
-  console.log("req,,,,,,,,,,,,,,,,,,,,", req.body);
-  try {
-    return await getAllUsersOfTypeServiceFunc(req, res);
-  } catch (err) {
-    return res.json({
-      status: 500,
-      success: false,
-      message: err,
-    });
-  }
-};
 
 exports.getAllPatientsOfAUser = async (req, res) => {
-  console.log("req,,,,,,,,,,,,,,,,,,,,", req.body);
   try {
     return await getAllPatientsOfAUserServiceFunc(req, res);
   } catch (err) {
@@ -39,10 +24,20 @@ exports.getAllPatientsOfAUser = async (req, res) => {
   }
 };
 
+exports.getAllUsersOfType = async (req, res) => {
+  try {
+    return await getAllUsersOfTypeServiceFunc(req, res);
+  } catch (err) {
+    return res.json({
+      status: 500,
+      success: false,
+      message: err,
+    });
+  }
+};
 
 exports.getUserViaId = async (req, res) => {
   try {
-    console.log('getUserViaId cotroller line 58 ', req.body);
     return await getUserViaIdServiceFunc(req, res);
   } catch (err) {
     return res.json({

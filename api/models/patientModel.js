@@ -26,15 +26,12 @@ const patientSchema = Schema({
     type: String,
     default: null
   },
-  doctor: {
-    type: String,
+  createdBy: {
+    //created by
+    type: Schema.Types.ObjectId, 
+    ref: 'User',
     default: null
   },
-  // createdBy: {
-  //   type: Schema.Types.ObjectId, 
-  //   ref: 'User',
-  //   default: null
-  // },
   createdAt: {
     type: Date,
     default: Date.now

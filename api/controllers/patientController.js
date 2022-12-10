@@ -3,7 +3,8 @@ const {
   addPatientServiceFunc,
   getAPatientsInfoServiceFunc,
   getAllTestsOfAPatientServiceFunc,
-  addATestOfAPatientServiceFunc
+  addATestOfAPatientServiceFunc,
+  getAllPatientsOfAUserServiceFunc
 } = require("@services/patientService");
 
 exports.getAllPatients = async (req, res) => {

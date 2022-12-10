@@ -26,11 +26,11 @@ router.get("/type/:type", userController.getAllUsersOfType);
 */
 router.get("/:userId/patients", userController.getAllPatientsOfAUser);
 //----------------------------------------------------------------------
-
+   
 /**
  * @private GET users/:userId
  * @params userId
- * @usage Get details of a user, since patient is also a type of user.
+ * @usage Get details of a user.
 */
 router.get("/:userId", userController.getUserViaId);
 //----------------------------------------------------------------------
@@ -51,35 +51,32 @@ router.post("/signIn", userController.signIn);
 //----------------------------------------------------------------------
 
 /**
- * @public PUT users/updateProfile
+ * @public PUT users/userId
  * @params userId
- * @usage Update a user's information.
+ * @usage Update users profile via user iser
 */
 router.put("/:userId", userController.updateProfile);
 //----------------------------------------------------------------------
 
 /**
- * @public POST users/updateProfile
- * @params userId
- * @usage Update a user's information.
+ * @public POST users/sendForgotPasswordOTPEmail
+ * @usage send Forgot Password OTP email.
 */
-router.post("/sendForgotPasswordOTPEmail", userController.sendForgotPasswordOTPEmail);
+router.post("/password/sendOtp", userController.sendForgotPasswordOTPEmail);
 //----------------------------------------------------------------------
 
 /**
- * @public POST users/updateProfile
- * @params userId
+ * @public POST users/verify
  * @usage Update a user's information.
 */
-router.post("/verifyOTP", userController.verifyOTP);
+router.post("/password/verify", userController.verifyOTP);
 //----------------------------------------------------------------------
 
 /**
- * @public PUT users/updateProfile
- * @params userId
- * @usage Update a user's information.
+ * @public PUT users/update
+ * @usage Update a user's password.
 */
-router.put("/updatePassword", userController.updatePassword);
+router.put("/password/update", userController.updatePassword);
 //----------------------------------------------------------------------
 
 
