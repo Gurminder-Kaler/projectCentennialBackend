@@ -44,7 +44,7 @@ router.get("/:patientId/tests", patientController.getAllTestsOfAPatient);
 //----------------------------------------------------------------------
 
 /**
- * @private POST /patients/:patientId/tests
+ * @private POST /patients/:patientId/testss
  * @params patientId
  * @usage Add a test for a patient.
 */

@@ -59,7 +59,6 @@ exports.getAPatientsInfo = async (req, res) => {
 };
 
 exports.getAllTestsOfAPatient = async (req, res) => {
-  console.log("req,,,,,,,,,,,,,,,,,,,,", req.body);
   try {
     return await getAllTestsOfAPatientServiceFunc(req, res);
   } catch (err) {

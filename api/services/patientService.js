@@ -4,46 +4,63 @@ const TestRecord = require("@models/testRecordModel");
 const Patient = require("@models/patientModel");
 
 const getAllTestsOfAPatientServiceFunc = async (req, res) => {
+  console.log('REQQQQ', req.params);
   Patient.findOne({ _id: req.params.patientId }).then((patient) => {
-    TestRecord.find({
-      userId: req.params.patientId
-    })
-      .select("-deletedAt")
-      .exec()
-      .then((docs) => {
-        return res.json({
-          success: true,
-          status: 200,
-          message: messages.SUCCESS.TEST.ALL,
-          patient: {
-            lastName: patient.lastName,
-            address: patient.address,
-            bloodGroup: patient.bloodGroup,
-            dob: patient.dob,
-            allergies: patient.allergies,
-            doctor: patient.doctor,
-            createdAt: patient.createdAt,
-          },
-          tests: docs.map((doc) => {
-            return {
-              _id: doc && doc._id,
-              risk: doc && doc.risk,
-              bloodPressureLow: doc && doc.bloodPressureLow,
-              bloodPressureHigh: doc && doc.bloodPressureHigh,
-              respiratoryRate: doc && doc.respiratoryRate,
-              createdAt: doc && doc.createdAt,
-              updatedAt: doc && doc.updatedAt,
-            };
-          }),
-        });
+    if (patient) {
+      TestRecord.find({
+        userId: req.params.patientId
       })
-      .catch((err) => {
-        return res.json({
-          success: false,
-          status: 500,
-          message: err,
+        .select("-deletedAt")
+        .exec()
+        .then((docs) => {
+          if (docs && docs.length > 0) {
+            return res.json({
+              success: true,
+              status: 200,
+              message: messages.SUCCESS.TEST.ALL,
+              patient: {
+                lastName: patient.lastName,
+                address: patient.address,
+                bloodGroup: patient.bloodGroup,
+                dob: patient.dob,
+                allergies: patient.allergies,
+                doctor: patient.doctor,
+                createdAt: patient.createdAt,
+              },
+              tests: docs.map((doc) => {
+                return {
+                  _id: doc && doc._id,
+                  risk: doc && doc.risk,
+                  bloodPressureLow: doc && doc.bloodPressureLow,
+                  bloodPressureHigh: doc && doc.bloodPressureHigh,
+                  respiratoryRate: doc && doc.respiratoryRate,
+                  createdAt: doc && doc.createdAt,
+                  updatedAt: doc && doc.updatedAt,
+                };
+              }),
+            });
+          } else {
+            return res.json({
+              success: false,
+              status: 404,
+              message: messages.SUCCESS.TEST.NOT_FOUND
+            });
+          }
+        })
+        .catch((err) => {
+          return res.json({
+            success: false,
+            status: 500,
+            message: err,
+          });
         });
+    } else {
+      return res.json({
+        success: false,
+        status: 404,
+        message: messages.SUCCESS.PATIENT.NOT_FOUND
       });
+    }
   });
 
 };
@@ -149,7 +166,7 @@ const getAPatientsInfoServiceFunc = async (req, res) => {
   // const tests = await TestRecord.find({ userId: req.params.patientId }).lean();
 
   Patient.findById(
-     req.params.patientId)
+    req.params.patientId)
     .select("-deletedAt")
     .then((doc) => {
       if (!doc) {
