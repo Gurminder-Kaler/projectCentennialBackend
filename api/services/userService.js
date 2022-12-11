@@ -50,7 +50,7 @@ const getAllPatientsOfAUserServiceFunc = async (req, res) => {
       });
     });
 }
-;l
+;
 const signUpServiceFunc = async (req, res) => {
   try {
     // console.log("console//////", req.body);
