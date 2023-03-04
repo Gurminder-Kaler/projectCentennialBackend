@@ -3,8 +3,6 @@ const messages = require("@constants/messages");
 const TestRecord = require("@models/testRecordModel");
 const Patient = require("@models/patientModel");
 
-
-
 const getAllTestsOfAPatientServiceFunc = async (req, res) => {
   console.log('REQQQQ', req.params);
   Patient.findOne({ _id: req.params.patientId }).then((patient) => {
@@ -123,14 +121,12 @@ const addPatientServiceFunc = async (req, res) => {
   try {
     let patient = new Patient({
       _id: new mongoose.Types.ObjectId(),
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      address: req.body.address,
-      doctor: req.body.doctor,
+      name: req.body.name,
+      phone: req.body.phone,
       dob: req.body.dob,
-      allergies: req.body.allergies,
-      department: req.body.department,
-      createdBy: req.body.createdBy
+      address: req.body.address,
+      country: req.body.country,
+      bloodGroup: req.body.bloodGroup
     });
     patient.save().then((result) => {
       if (result) {
@@ -140,15 +136,12 @@ const addPatientServiceFunc = async (req, res) => {
           message: messages.SUCCESS.PATIENT.ADDED,
           data: {
             id: result._id,
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            address: req.body.address,
-            bloodGroup: req.body.bloodGroup,
+            name: req.body.name,
+            phone: req.body.phone,
             dob: req.body.dob,
-            doctor: req.body.doctor,
-            allergies: req.body.allergies,
-            department: req.body.department,
-            createdBy: req.body.createdBy
+            address: req.body.address,
+            country: req.body.country,
+            bloodGroup: req.body.bloodGroup
           },
         });
       }

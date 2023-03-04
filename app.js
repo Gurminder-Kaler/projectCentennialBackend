@@ -6,8 +6,7 @@ const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 
-
-mongoose.connect(process.env.MONGO_URI_ONLINE, {
+mongoose.connect(process.env.MONGO_URI_LOCAL, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
@@ -39,12 +38,9 @@ app.use((req, res, next) => {
   next()
 })
 
-//routes which should handle requests
-const userRouter = require('./api/routes/userRoute')
 const patientRouter = require('./api/routes/patientRoute')
 const departmentRouter = require('./api/routes/departmentRoute')
 
-app.use('/users', userRouter)
 app.use('/patients', patientRouter)
 app.use('/departments', departmentRouter)
 

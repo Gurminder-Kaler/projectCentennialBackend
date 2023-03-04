@@ -2,34 +2,28 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
 const patientSchema = Schema({
   _id: Schema.Types.ObjectId,
-  firstName: {
+  name: {
     type: String,
     required: true
   },
-  lastName: {
+  phone: {
     type: String,
+    required: true
+  },
+  dob: {
+    type: Date,
     default: null
   },
   address: {
     type: String,
     default: null
   },
+  country: {
+    type: String,
+    default: null
+  },
   bloodGroup: {
     type: String,
-    default: null
-  },
-  dob: {
-    type: Date,
-    default: null
-  },
-  allergies: {
-    type: String,
-    default: null
-  },
-  createdBy: {
-    //created by
-    type: Schema.Types.ObjectId, 
-    ref: 'User',
     default: null
   },
   createdAt: {

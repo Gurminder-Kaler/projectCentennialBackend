@@ -2,7 +2,7 @@
     "env": {
         "MONGO_ATLAS_PW": "Test@1223",
         "MONGO_URI_ONLINE": "mongodb+srv://gangwar0145:xxGTyguBt2EnatV5@cluster0.mmynjns.mongodb.net/nodejsassignment?retryWrites=true&w=majority",
-        "MONGO_URI_LOCAL": "mongodb://localhost:27017/centennialProject",
+        "MONGO_URI_LOCAL": "mongodb://localhost:27017/flutterPatientProject",
         "JWT_KEY": "secret",
         "PROXY": "http://localhost:8001",
         "LIVE_PROXY": "http://3.223.2.92"
