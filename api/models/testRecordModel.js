@@ -12,6 +12,12 @@ const testRecordSchema = Schema({
   respiratoryRate : {
     type: String,
   },
+  bloodOxygen : {
+    type: String,
+  },
+  heartBeat : {
+    type: String,
+  },
   risk : {
     type: String,
   },

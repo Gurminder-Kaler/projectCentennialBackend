@@ -19,12 +19,10 @@ const getAllTestsOfAPatientServiceFunc = async (req, res) => {
               status: 200,
               message: messages.SUCCESS.TEST.ALL,
               patient: {
-                lastName: patient.lastName,
+                name: patient.name,
                 address: patient.address,
                 bloodGroup: patient.bloodGroup,
                 dob: patient.dob,
-                allergies: patient.allergies,
-                doctor: patient.doctor,
                 createdAt: patient.createdAt,
               },
               tests: docs.map((doc) => {
@@ -34,6 +32,8 @@ const getAllTestsOfAPatientServiceFunc = async (req, res) => {
                   bloodPressureLow: doc && doc.bloodPressureLow,
                   bloodPressureHigh: doc && doc.bloodPressureHigh,
                   respiratoryRate: doc && doc.respiratoryRate,
+                  bloodOxygen: doc && doc.bloodOxygen,
+                  heartBeat: doc && doc.heartBeat,
                   createdAt: doc && doc.createdAt,
                   updatedAt: doc && doc.updatedAt,
                 };
@@ -67,13 +67,16 @@ const getAllTestsOfAPatientServiceFunc = async (req, res) => {
 
 const addATestOfAPatientServiceFunc = async (req, res) => {
   try {
+    console.log('req.params', req.params);
     Patient.findOne({ _id: req.params.patientId }).then((patient) => {
       let testVar = new TestRecord({
         _id: new mongoose.Types.ObjectId(),
-        risk: req.body.risk,
         bloodPressureLow: req.body.bloodPressureLow,
         bloodPressureHigh: req.body.bloodPressureHigh,
         respiratoryRate: req.body.respiratoryRate,
+        bloodOxygen: req.body.bloodOxygen,
+        heartBeat: req.body.heartBeat,
+        risk: req.body.risk,
         userId: req.params.patientId,
       });
 
@@ -85,20 +88,13 @@ const addATestOfAPatientServiceFunc = async (req, res) => {
             success: true,
             message: messages.SUCCESS.TEST.ADDED,
             data: {
-              patient: {
-                lastName: patient.lastName,
-                address: patient.address,
-                bloodGroup: patient.bloodGroup,
-                dob: patient.dob,
-                allergies: patient.allergies,
-                doctor: patient.doctor,
-                createdAt: patient.createdAt,
-              },
               id: result._id,
               risk: result.risk,
               bloodPressureLow: result.bloodPressureLow,
               bloodPressureHigh: result.bloodPressureHigh,
               respiratoryRate: result.respiratoryRate,
+              bloodOxygen: result.bloodOxygen,
+              heartBeat: result.heartBeat,
               createdAt: result.createdAt,
               updatedAt: result.updatedAt,
             },
@@ -190,6 +186,7 @@ const getAPatientsInfoServiceFunc = async (req, res) => {
 const getAllPatientsServiceFunc = async (req, res) => {
   Patient.find()
     .select("-deletedAt")
+    .sort({ 'createdAt': 'desc' })
     .exec()
     .then((doc) => {
       return res.json({

@@ -51,4 +51,5 @@ router.get("/:patientId/tests", patientController.getAllTestsOfAPatient);
 router.post("/:patientId/tests", patientController.addATestOfAPatient);
 
 
+
 module.exports = router;
